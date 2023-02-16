@@ -53,8 +53,8 @@ const Signup = () => {
               errors.repeatEmail = "The two emails must be the same.";
             }else if (!values.password) {
               errors.password = "This field is mandatory";
-            } else if (values.password.length > 8) {
-              errors.lastName = "Password - 8 symbols";
+            } else if (values.password.length < 8) {
+              errors.password = "Password - 8 symbols";
             } else if (values.terms === false) {
               errors.terms = "This field is mandatory";
             } else if (
