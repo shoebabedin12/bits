@@ -1,4 +1,4 @@
-import { Formik } from "formik";
+import { Field, Formik } from "formik";
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import Loader from "./Loader";
@@ -37,19 +37,26 @@ const Signup = () => {
       </div>
       <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
         <Formik
-          initialValues={{ email: "", repeatEmail: "", password: "" }}
+          initialValues={{
+            email: "",
+            repeatEmail: "",
+            password: "",
+            terms: false
+          }}
           validate={(values) => {
             const errors = {};
             if (!values.email) {
               errors.email = "This field is mandatory";
             } else if (!values.repeatEmail) {
               errors.repeatEmail = "This field is mandatory";
-            } else if (!values.password) {
-              errors.password = "This field is mandatory";
-            } else if (values.repeatEmail !== values.email) {
+            }  else if (values.repeatEmail !== values.email) {
               errors.repeatEmail = "The two emails must be the same.";
+            }else if (!values.password) {
+              errors.password = "This field is mandatory";
             } else if (values.password.length > 8) {
               errors.lastName = "Password - 8 symbols";
+            } else if (values.terms === false) {
+              errors.terms = "This field is mandatory";
             } else if (
               !/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i.test(values.email)
             ) {
@@ -72,7 +79,6 @@ const Signup = () => {
             handleBlur,
             handleSubmit,
             isSubmitting
-            /* and other goodies */
           }) => (
             <form
               className="bg-white py-8 px-4 shadow sm:rounded-lg sm:px-10"
@@ -90,7 +96,6 @@ const Signup = () => {
                     onBlur={handleBlur}
                     value={values.email}
                     type="email"
-                    autoComplete="off"
                     name="email"
                     className={`form-input block py-2 px-3 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:shadow-outline-blue focus:border-blue-300 transition duration-150 ease-in-out sm:text-sm sm:leading-5 ${
                       errors.email ? "border-red-500" : ""
@@ -143,16 +148,6 @@ const Signup = () => {
                       </font>
                     </div>
                   )}
-
-                  {errors.repeatEmail && (
-                    <div className="text-xs text-red-500">
-                      <font style={{ verticalAlign: "inherit" }}>
-                        <font style={{ verticalAlign: "inherit" }}>
-                          {touched.repeatEmail && errors.repeatEmail}
-                        </font>
-                      </font>
-                    </div>
-                  )}
                 </div>
               </div>
               <div className="mt-6">
@@ -189,8 +184,10 @@ const Signup = () => {
               <div className="mt-6">
                 <label className="relative flex items-start mt-2">
                   <div className="flex items-center h-5">
-                    <input
+                    <Field
+                      onChange={handleChange}
                       type="checkbox"
+                      name="terms"
                       className={`form-checkbox h-4 w-4 text-indigo-600 transition duration-150 ease-in-out cursor-pointer`}
                     />
                   </div>
@@ -207,7 +204,7 @@ const Signup = () => {
                       <Link
                         to="#"
                         target="_blank"
-                        className="underline"
+                        className="underline pl-1"
                         rel="noreferrer"
                       >
                         <font style={{ verticalAlign: "inherit" }}>
@@ -249,21 +246,23 @@ const Signup = () => {
                       <font style={{ verticalAlign: "inherit" }}></font>
                     </span>
 
-                    <div className="text-red-500 border-b-0">
-                      <font style={{ verticalAlign: "inherit" }}>
+                    {errors.terms && (
+                      <div className="text-red-500 border-b-0">
                         <font style={{ verticalAlign: "inherit" }}>
-                          (This field is mandatory)
+                          <font style={{ verticalAlign: "inherit" }}>
+                            {errors.terms}
+                          </font>
                         </font>
-                      </font>
-                    </div>
+                      </div>
+                    )}
                   </div>
                 </label>
               </div>
               <div className="mt-6">
                 <span className="block w-full rounded-md shadow-sm">
-                  <button className="w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-500 focus:outline-none focus:border-indigo-700 focus:shadow-outline-indigo active:bg-indigo-700 transition duration-150 ease-in-out">
+                  <button className="w-full flex  justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-500 focus:outline-none focus:border-indigo-700 focus:shadow-outline-indigo active:bg-indigo-700 transition duration-150 ease-in-out">
                     <font style={{ verticalAlign: "inherit" }}>
-                      <font style={{ verticalAlign: "inherit" }}>
+                      <font style={{ verticalAlign: "inherit" }} className="flex items-center justify-center">
                         {loading && <Loader />}
                         Create an account
                       </font>
